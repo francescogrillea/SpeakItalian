@@ -3,8 +3,14 @@ import mediapipe as mp
 import time
 from datetime import datetime
 from datetime import timedelta
-from landmarks import landmarks_name
+import pandas as pd
+from utils import *
 
+
+user = "Francesco"
+gesture = "thumb_up"
+
+df = pd.DataFrame()
 
 cap = cv2.VideoCapture(0)
 
@@ -14,9 +20,9 @@ hands = mpHands.Hands(static_image_mode=False,
                       min_detection_confidence=0.5,
                       min_tracking_confidence=0.5)
 mpDraw = mp.solutions.drawing_utils
-
-
 now = datetime.now() - timedelta(0, 10)
+
+
 while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
@@ -27,25 +33,27 @@ while True:
 
 
     # Show results every x seconds
-    sleep_time = 3
+    sleep_time = 0.5
     if datetime.now() > now + timedelta(0, sleep_time):
+        dictionary = {}
 
         if results.multi_hand_landmarks:
             landmarks = []
+            handLms = results.multi_hand_landmarks[0]
 
-            for handLms in results.multi_hand_landmarks:
-                for enu, lm in enumerate(handLms.landmark):
-                    landmark_xyz = [lm.x, lm.y, lm.z]
-                    print([f"{c:0.3f}" for c in landmark_xyz], end='\t')
-                    print(landmarks_name[enu])
+            for enu, lm in enumerate(handLms.landmark):
+                landmark_xyz = [lm.x, lm.y, lm.z]
+                landmarks.append(landmark_xyz)
 
-
-                mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
-
+            landmarks = normalize(landmarks)
+            dictionary = create_dict(landmarks)
+            mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
+            df = pd.concat([df, pd.DataFrame([dictionary])], ignore_index=True)
             print(landmarks)
 
         now = datetime.now()
 
+    #exit condition
     cv2.imshow("Image", frame)
     if cv2.waitKey(1) == ord('q'):
         break
@@ -53,3 +61,13 @@ while True:
 # release the webcam and destroy all active windows
 cap.release()
 cv2.destroyAllWindows()
+
+
+
+print(df)
+df.to_csv(user+"_"+gesture+".csv")
+
+
+
+
+
