@@ -6,7 +6,7 @@ landmarks_name = {
     4:  "THUMB_TIP",
     5:  "INDEX_FINGER_MCP",
     6:  "INDEX_FINGER_PIP",
-    7:  "INDEX_FINGER:DIP",
+    7:  "INDEX_FINGER_DIP",
     8:  "INDEX_FINGER_TIP",
     9:  "MIDDLE_FINGER_MCP",
     10: "MIDDLE_FINGER_PIP",

@@ -3,7 +3,7 @@ import mediapipe as mp
 import time
 
 from dataset.landmarks import landmarks_name
-
+from dataset.normalize_coordinates import normalize
 
 def frame_acquisition(filename):
     cap = cv2.VideoCapture(filename)
@@ -33,7 +33,11 @@ def frame_acquisition(filename):
 
             mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
 
-        # print(landmarks)
+        print("\nNORMALIZED")
+        for enu, lm in enumerate(normalize(landmarks)):
+            print([f"{c:0.3f}" for c in lm], end='\t')
+            print(landmarks_name[enu])
+        print()
 
     cv2.imshow("Image", frame)
     if cv2.waitKey(0) == ord('q'):
