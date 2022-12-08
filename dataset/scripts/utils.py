@@ -55,3 +55,19 @@ landmarks_name = {
     19: "PINKY_DIP",
     20: "PINKY_TIP"
 }
+
+labels = ["thumbUp",
+          "thumbDown",
+          "okay",
+          "gun",
+          "doubleGun",
+          "call",
+          "horn",
+          "fist",
+          "whish",
+          "rock",
+          "one",
+          "two",
+          "three",
+          "four",
+          "five"]

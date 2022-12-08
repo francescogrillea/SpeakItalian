@@ -7,8 +7,8 @@ import pandas as pd
 from utils import *
 
 
-user = "Francesco"
-gesture = "thumb_up"
+user = "francesco"
+gesture = "thumbUp"
 
 df = pd.DataFrame()
 
@@ -65,7 +65,7 @@ cv2.destroyAllWindows()
 
 
 print(df)
-df.to_csv(user+"_"+gesture+".csv")
+df.to_csv("../"+user+"_"+gesture+".csv")
 
 
 

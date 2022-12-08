@@ -1,9 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
-
-from dataset.landmarks import landmarks_name
-from dataset.normalize_coordinates import normalize
+from utils import *
 
 def frame_acquisition(filename):
     cap = cv2.VideoCapture(filename)
