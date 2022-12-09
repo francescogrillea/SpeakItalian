@@ -1,4 +1,4 @@
-from dataset.frame_acquisition import frame_acquisition
+from dataset.scripts.frame_acquisition import frame_acquisition
 
 frames_to_acquire = [
     'images/prova2.jpg',

@@ -1,14 +1,25 @@
 import cv2
 import mediapipe as mp
-import time
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import pandas as pd
 from utils import *
+import os
 
 
-user = "francesco"
+user = "daniele"
 gesture = "thumbUp"
+
+path = f'../{user}/'
+image_path = path + 'images/'
+print(os.listdir())
+
+if not os.path.exists(path):
+    os.mkdir(path)
+
+if not os.path.exists(image_path):
+    print(image_path)
+    os.mkdir(image_path)
+
 
 df = pd.DataFrame()
 
@@ -20,40 +31,54 @@ hands = mpHands.Hands(static_image_mode=False,
                       min_detection_confidence=0.5,
                       min_tracking_confidence=0.5)
 mpDraw = mp.solutions.drawing_utils
-now = datetime.now() - timedelta(0, 10)
 
+current_frame = 5
+# Show results every x frame
+sleep_frame = 10
+
+frame_counter = 0
 
 while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
 
-
     results = hands.process(frame)
-    #print(results.multi_hand_landmarks)
 
+    dictionary = {}
 
-    # Show results every x seconds
-    sleep_time = 0.5
-    if datetime.now() > now + timedelta(0, sleep_time):
-        dictionary = {}
+    if results.multi_hand_landmarks:
+        landmarks = []
+        handLms = results.multi_hand_landmarks[0]
 
-        if results.multi_hand_landmarks:
-            landmarks = []
-            handLms = results.multi_hand_landmarks[0]
+        for enu, lm in enumerate(handLms.landmark):
+            landmark_xyz = [lm.x, lm.y, lm.z]
+            landmarks.append(landmark_xyz)
 
-            for enu, lm in enumerate(handLms.landmark):
-                landmark_xyz = [lm.x, lm.y, lm.z]
-                landmarks.append(landmark_xyz)
+        landmarks = normalize(landmarks)
+        dictionary = create_dict(landmarks)
 
-            landmarks = normalize(landmarks)
-            dictionary = create_dict(landmarks)
-            mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
+        if current_frame > sleep_frame:
+            current_frame = 0
+
+            gesture_path = image_path + gesture + "/"
+            if not os.path.exists(gesture_path):
+                os.mkdir(gesture_path)
+
+            filename = gesture_path + f"{frame_counter}.jpg"
+            print(filename)
+            cv2.imwrite(filename, frame)
+
+            frame_counter += 1
+
             df = pd.concat([df, pd.DataFrame([dictionary])], ignore_index=True)
             print(landmarks)
 
-        now = datetime.now()
+        mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
 
-    #exit condition
+    current_frame += 1
+    print(current_frame)
+
+    # exit condition
     cv2.imshow("Image", frame)
     if cv2.waitKey(1) == ord('q'):
         break
@@ -63,9 +88,9 @@ cap.release()
 cv2.destroyAllWindows()
 
 
+# print(df)
 
-print(df)
-df.to_csv("../"+user+"_"+gesture+".csv")
+df.to_csv(path + gesture + ".csv")
 
 
 
