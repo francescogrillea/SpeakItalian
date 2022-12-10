@@ -1,12 +1,12 @@
-# Normalize x and y w.r.t. their min and max values
 def normalize(landmarks):
+    # Normalize x and y w.r.t. their min and max values
     lms = landmarks
     min_x = 1
     min_y = 1
     max_x = 0
     max_y = 0
 
-    for [x, y, z] in landmarks:
+    for [x, y, _] in landmarks:
         min_x = min(x, min_x)
         max_x = max(x, max_x)
         min_y = min(y, min_y)
@@ -19,30 +19,28 @@ def normalize(landmarks):
     return lms
 
 
-
-# Create a dictionary from the landmarks in such a way to create the dataframe easily
 def create_dict(landmarks):
+    # Create a dictionary from the landmarks in such a way to create the dataframe easily
     dictionary = {}
-    for id, [x, y, z] in enumerate(landmarks):
-        dictionary[str(id) + "x"] = x
-        dictionary[str(id) + "y"] = y
-        dictionary[str(id) + "z"] = z
+    for enu, [x, y, z] in enumerate(landmarks):
+        dictionary[landmarks_name[enu] + "_x"] = x
+        dictionary[landmarks_name[enu] + "_y"] = y
+        dictionary[landmarks_name[enu] + "_z"] = z
 
     return dictionary
 
 
-
 landmarks_name = {
-    0:  "WRIST",
-    1:  "THUMB_CMC",
-    2:  "THUMB_MCP",
-    3:  "THUMBJP",
-    4:  "THUMB_TIP",
-    5:  "INDEX_FINGER_MCP",
-    6:  "INDEX_FINGER_PIP",
-    7:  "INDEX_FINGER_DIP",
-    8:  "INDEX_FINGER_TIP",
-    9:  "MIDDLE_FINGER_MCP",
+    0: "WRIST",
+    1: "THUMB_CMC",
+    2: "THUMB_MCP",
+    3: "THUMBJP",
+    4: "THUMB_TIP",
+    5: "INDEX_FINGER_MCP",
+    6: "INDEX_FINGER_PIP",
+    7: "INDEX_FINGER_DIP",
+    8: "INDEX_FINGER_TIP",
+    9: "MIDDLE_FINGER_MCP",
     10: "MIDDLE_FINGER_PIP",
     11: "MIDDLE_FINGER_DIP",
     12: "MIDDLE_FINGER_TIP",
@@ -56,18 +54,21 @@ landmarks_name = {
     20: "PINKY_TIP"
 }
 
-labels = ["thumbUp",
-          "thumbDown",
-          "okay",
-          "gun",
-          "doubleGun",
-          "call",
-          "horn",
-          "fist",
-          "whish",
-          "rock",
-          "one",
-          "two",
-          "three",
-          "four",
-          "five"]
+
+labels = [
+    "thumbUp",
+    "thumbDown",
+    "okay",
+    "gun",
+    "doubleGun",
+    "call",
+    "horn",
+    "fist",
+    "wish",
+    "rock",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five"
+]
