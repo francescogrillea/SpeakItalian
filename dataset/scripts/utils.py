@@ -19,7 +19,7 @@ def normalize(landmarks):
     return lms
 
 
-def create_dict(landmarks):
+def create_dict(landmarks, label):
     # Create a dictionary from the landmarks in such a way to create the dataframe easily
     dictionary = {}
     for enu, [x, y, z] in enumerate(landmarks):
@@ -27,6 +27,7 @@ def create_dict(landmarks):
         dictionary[landmarks_name[enu] + "_y"] = y
         dictionary[landmarks_name[enu] + "_z"] = z
 
+    dictionary["class"] = label
     return dictionary
 
 
