@@ -4,25 +4,30 @@ import cv2
 import mediapipe as mp
 import time
 import pandas as pd
-from utils import *
+from dataset.scripts.utils import *
 
 
-def create_dataset(root_filepath):
+def create_dataset(*users, flip_horizontally=False):
+    # Given a list of users automatically create the dataset with all the gestures for every user
+    # It searches the gestures in dataset/{user}
+
+    for user in users:
+        df = pd.DataFrame()
+
+        for root, _, files in os.walk(os.path.join('dataset', user)):
+            for file in files:
+                if file.endswith('.mp4') and not file.startswith('all_gestures'):
+                    result = process_video(os.path.join(root, file), horizontal_flip=flip_horizontally)
+                    df = pd.concat([df, result], ignore_index=True)
+
+        df.to_csv(os.path.join('dataset', f'{user}.csv'))
+
+
+def process_video(filename, save_df=False, horizontal_flip=False):
+    print(f'processing {filename}...')
+
     df = pd.DataFrame()
-
-    for root, subdirs, files in os.walk(root_filepath):
-        for file in files:
-            result = record_stream(os.path.join(root, file))
-            df = pd.concat([df, result], ignore_index=True)
-
-    df.to_csv("dataset.csv")
-
-
-
-def record_stream(filename, frame_rate=5, save_df=False):
-
-    df = pd.DataFrame()
-    label = filename.split("_")[-1].split(".")[0]
+    label = os.path.split(filename)[-1].removesuffix('.mp4')
 
     cap = cv2.VideoCapture(filename)
 
@@ -32,50 +37,44 @@ def record_stream(filename, frame_rate=5, save_df=False):
                           min_detection_confidence=0.5,
                           min_tracking_confidence=0.5)
     mpDraw = mp.solutions.drawing_utils
-    prev = 0
 
-    while(cap.isOpened()):
+    while cap.isOpened():
         ret, frame = cap.read()
+        if horizontal_flip:
+            frame = cv2.flip(frame, 1)
 
         if not ret:
             break
 
-        time_elapsed = time.time() - prev
         results = hands.process(frame)
 
-        if time_elapsed > 1./frame_rate:
+        if results.multi_hand_landmarks:
+            landmarks = []
+            handLms = results.multi_hand_landmarks[0]
 
-            if results.multi_hand_landmarks:
-                landmarks = []
-                handLms = results.multi_hand_landmarks[0]
+            for enu, lm in enumerate(handLms.landmark):
+                landmark_xyz = [lm.x, lm.y, lm.z]
+                landmarks.append(landmark_xyz)
 
-                for enu, lm in enumerate(handLms.landmark):
-                    landmark_xyz = [lm.x, lm.y, lm.z]
-                    landmarks.append(landmark_xyz)
+            # normalize landmarks
+            landmarks = normalize(landmarks)
+            dictionary = create_dict(landmarks, label)
 
-                # normalize landmarks
-                landmarks = normalize(landmarks)
-                dictionary = create_dict(landmarks, label)
-                mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
-                df = pd.concat([df, pd.DataFrame([dictionary])], ignore_index=True)
-                print(landmarks)
+            df = pd.concat([df, pd.DataFrame([dictionary])], ignore_index=True)
 
-            prev = time.time()
+            mpDraw.draw_landmarks(frame, handLms, mpHands.HAND_CONNECTIONS)
+
+            # Show the final output
+            cv2.imshow("Output", frame)
+            if cv2.waitKey(1) == ord('q'):
+                break
 
     # release the webcam and destroy all active windows
     cap.release()
     cv2.destroyAllWindows()
 
-    print(df)
+    # print(df)
     if save_df:
-        df.to_csv(filename[:-3]+".csv")
+        df.to_csv(filename[:-4]+".csv")
+
     return df
-
-
-
-
-
-create_dataset("../media/")
-
-
-

@@ -61,15 +61,10 @@ labels = [
     "thumbDown",
     "okay",
     "gun",
-    "doubleGun",
     "call",
-    "horn",
     "fist",
-    "wish",
+    "stop",
+    "peace",
     "rock",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five"
+    "index"
 ]
