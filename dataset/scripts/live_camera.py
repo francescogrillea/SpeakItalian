@@ -16,7 +16,7 @@ def record_live(user, gestures_to_do=None):
     # Create a video for every gesture, it stops when 150 frames are recorded
     # If gestures_to_do is not provided record all gestures
     wait_time = 3           # time in seconds to wait between a gesture and the other
-    frame_to_record = 50   # frame to record for every gesture
+    frame_to_record = 200   # frame to record for every gesture
 
     df = pd.DataFrame()
 
