@@ -9,8 +9,6 @@
 
 from dataset.scripts.create_dataset import *
 from dataset.scripts.live_camera import *
+from dataset.scripts.utils import *
 
 record_live('daniele')
-
-#create_dataset('damiano', 'marianna', 'daniele', 'daniele_zio', 'donatella', flip_horizontally=True)
-#create_dataset('anna')
