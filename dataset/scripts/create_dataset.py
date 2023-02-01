@@ -11,10 +11,11 @@ def create_dataset(*users, flip_horizontally=False, save_file=None):
     # Given a list of users automatically create the dataset with all the gestures for every user
     # It searches the gestures in dataset/{user}
 
-    if save_file is None:
-        save_file = os.path.join('dataset', f'{user}.csv')
-        
     for user in users:
+
+        if save_file is None:
+            save_file = os.path.join('dataset', f'{user}.csv')
+
         df = pd.DataFrame()
 
         for root, _, files in os.walk(os.path.join('dataset', user)):

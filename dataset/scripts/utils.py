@@ -35,7 +35,7 @@ landmarks_name = {
     0: "WRIST",
     1: "THUMB_CMC",
     2: "THUMB_MCP",
-    3: "THUMBJP",
+    3: "THUMB_IP",
     4: "THUMB_TIP",
     5: "INDEX_FINGER_MCP",
     6: "INDEX_FINGER_PIP",

@@ -7,8 +7,6 @@
 #    ad esempio
 #       thumbUp_right.mp4
 
-from dataset.scripts.create_dataset import *
 from dataset.scripts.live_camera import *
-from dataset.scripts.utils import *
 
 record_live('caterina')
