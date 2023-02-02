@@ -77,7 +77,7 @@ def show_text(image, text, x=10, y=50):
 
     # Add some fading by showing the text in black translated
     cv2.putText(image, text, (x + 2, y + 2), cv2.FONT_HERSHEY_SIMPLEX,
-                0.7, (0, 0, 0), 2, cv2.LINE_AA)
+                1, (0, 0, 0), 2, cv2.LINE_AA)
 
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
-                0.7, (255, 255, 255), 2, cv2.LINE_AA)
+                1, (255, 255, 255), 2, cv2.LINE_AA)

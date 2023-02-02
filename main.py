@@ -1,11 +1,13 @@
 import cv2
+import numpy as np
 import pandas as pd
 import mediapipe as mp
 import pickle as pk
 from dataset.scripts.utils import normalize, create_dict, show_text
 
 
-BATCH_SIZE = 20
+BATCH_SIZE = 10
+FEATURE_SIZE = 9
 
 classifier = pk.load(open('model/classifier.sav', 'rb'))
 pca = pk.load(open("model/pca.pkl", 'rb'))
@@ -18,10 +20,13 @@ mp_draw = mp.solutions.drawing_utils
 # initialize webcam
 cap = cv2.VideoCapture(0)
 
+batch = pd.DataFrame()
+label = ""
 
 while True:
+
     _, frame = cap.read()
-    frame = cv2.flip(frame,1)
+    frame = cv2.flip(frame, 1)
 
 
     results = hands.process(frame)
@@ -44,12 +49,18 @@ while True:
         mp_draw.draw_landmarks(frame, hand_lms, mp_hands.HAND_CONNECTIONS)
         landmarks_reduced = pca.transform(new_data)
 
-        output = classifier.predict(landmarks_reduced)[0]
-        print(output)
+        batch = pd.concat([batch, pd.DataFrame(landmarks_reduced)], ignore_index=True)
 
-        show_text(frame, output)
+        if batch.shape[0] >= BATCH_SIZE:
 
+            output = classifier.predict(batch)
+            u, c = np.unique(output, return_counts=True)
+            label = u[c.argmax()]
+            print(label)
 
+            batch = pd.DataFrame()
+
+    show_text(frame, label)
 
     cv2.imshow("SpeakItalian", frame)
     try:
