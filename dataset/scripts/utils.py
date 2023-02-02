@@ -1,3 +1,5 @@
+import cv2
+
 def normalize(landmarks):
     # Normalize x and y w.r.t. their min and max values
     lms = landmarks
@@ -68,3 +70,14 @@ labels = [
     "rock",
     "index"
 ]
+
+def show_text(image, text, x=10, y=50):
+    """Show 'text' onto 'img' at (x, y)
+    """
+
+    # Add some fading by showing the text in black translated
+    cv2.putText(image, text, (x + 2, y + 2), cv2.FONT_HERSHEY_SIMPLEX,
+                0.7, (0, 0, 0), 2, cv2.LINE_AA)
+
+    cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
+                0.7, (255, 255, 255), 2, cv2.LINE_AA)
