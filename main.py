@@ -9,8 +9,8 @@ from dataset.scripts.utils import normalize, create_dict, show_text
 BATCH_SIZE = 10
 FEATURE_SIZE = 9
 
-classifier = pk.load(open('model/classifier.sav', 'rb'))
-pca = pk.load(open("model/pca.pkl", 'rb'))
+classifier = pk.load(open('model/classifier_20.sav', 'rb'))
+pca = pk.load(open("model/pca_20_classes.pkl", 'rb'))
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.5)
