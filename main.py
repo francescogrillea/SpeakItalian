@@ -9,8 +9,7 @@ from dataset.scripts.utils import normalize, create_dict, show_text
 BATCH_SIZE = 10
 FEATURE_SIZE = 9
 
-classifier = pk.load(open('model/classifier_20.sav', 'rb'))
-pca = pk.load(open("model/pca_20_classes.pkl", 'rb'))
+pipe = pk.load(open('model/pipeline.sav', 'rb'))
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.5)
@@ -47,13 +46,11 @@ while True:
         new_data = pd.DataFrame([dictionary]).drop(columns=["class"])
 
         mp_draw.draw_landmarks(frame, hand_lms, mp_hands.HAND_CONNECTIONS)
-        landmarks_reduced = pca.transform(new_data)
 
-        batch = pd.concat([batch, pd.DataFrame(landmarks_reduced)], ignore_index=True)
+        batch = pd.concat([batch, pd.DataFrame(new_data)], ignore_index=True)
 
         if batch.shape[0] >= BATCH_SIZE:
-
-            output = classifier.predict(batch)
+            output = pipe.predict(batch)
             u, c = np.unique(output, return_counts=True)
             label = u[c.argmax()]
             print(label)
