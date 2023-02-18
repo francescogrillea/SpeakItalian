@@ -7,9 +7,8 @@ from dataset.scripts.utils import normalize, create_dict, show_text
 
 
 BATCH_SIZE = 10
-FEATURE_SIZE = 9
 
-pipe = pk.load(open('model/pipeline.sav', 'rb'))
+pipe = pk.load(open('model/GaussianNB().sav', 'rb'))
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.5)
