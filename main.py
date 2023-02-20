@@ -5,7 +5,6 @@ import mediapipe as mp
 import pickle as pk
 from dataset.scripts.utils import normalize, create_dict, show_text
 
-
 BATCH_SIZE = 10
 
 pipe = pk.load(open('model/GaussianNB().sav', 'rb'))
@@ -13,7 +12,6 @@ pipe = pk.load(open('model/GaussianNB().sav', 'rb'))
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.5)
 mp_draw = mp.solutions.drawing_utils
-
 
 # initialize webcam
 cap = cv2.VideoCapture(0)
@@ -26,10 +24,7 @@ while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
 
-
     results = hands.process(frame)
-    #print(results.multi_hand_landmarks)
-
 
     if results.multi_hand_landmarks:
         landmarks = []
